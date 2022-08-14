@@ -18,7 +18,7 @@ from typing import List, Dict, Any, Optional, Literal, Union, Tuple, Callable, c
 
 # from clip.model import CLIP
 from open_clip import create_model_and_transforms as create_clip, CLIP, tokenize
-from interoo import ClipOptions
+from clip_options import ClipOptions
 
 
 class RuntimeConfig(BaseModel):
