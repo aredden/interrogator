@@ -20,6 +20,7 @@ from typing import List, Dict, Any, Optional, Union, Tuple, Callable, cast
 # from clip.model import CLIP
 from open_clip import create_model_and_transforms as create_clip, CLIP, tokenize
 from clip_options import ClipOptions
+import pydash as p_
 
 
 class RuntimeConfig(BaseModel):
@@ -144,15 +145,9 @@ class Interrogator:
                 from_each=from_each,
             )
             bests_adjs.extend(adj_ranks)
+            bests_adjs = p_.uniq_with(bests_adjs, lambda x: x[0])
             bests_adjs = sorted(bests_adjs, key=lambda x: x[1], reverse=True)
-            bests_adjs = self.rank_adj(
-                model,
-                image_features,
-                [bests_adjs[b][0] for b in range(len(bests_adjs))],
-                top_count=5,
-                batch_size=batch_size,
-                from_each=from_each,
-            )
+
             for i in range(len(ranks)):
                 confidence_sum = 0
                 for ci in range(len(ranks[i])):
@@ -186,15 +181,16 @@ class Interrogator:
             else:
                 print(df.head(2))
 
+        # bests_adjs = list(set([b[0] for b in bests_adjs]))
+        bests_adjs = p_.uniq_with(bests_adjs, lambda x: x[0])
+
         flaves: str = ", ".join([f"{x[0]}" for x in bests[4]])
         medium: str = bests[0][0][0]
         medium_middle = ""
         if caption.startswith(medium):
             medium_middlle = f", {medium} "
 
-        adjective_beginning = (
-            f"A {bests_adjs[0][0].lower()}, {bests_adjs[1][0].lower()} "
-        )
+        adjective_beginning = f"A {bests_adjs[0].lower()}, {bests_adjs[1].lower()} "
         caption = f"{caption if not caption.lower().startswith('a ') else caption[2:]}"
         artist = f" {bests[1][0][0]}, "
         styles = (
