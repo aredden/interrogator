@@ -263,10 +263,11 @@ def chunk(items, chunk_size):
     return [items[i : i + chunk_size] for i in range(0, len(items), chunk_size)]
 
 
-def build_trending_list(trending_list):
-    trending_list += ["trending on " + site for site in trending_list]
-    trending_list += ["featured on " + site for site in trending_list]
-    trending_list += [site + " contest winner" for site in trending_list]
+def build_trending_list(trending_list: List[str]):
+    trending_list_copy = p_.clone_deep(trending_list)
+    trending_list += ["trending on " + site for site in trending_list_copy]
+    trending_list += ["featured on " + site for site in trending_list_copy]
+    trending_list += [site + " contest winner" for site in trending_list_copy]
     return trending_list
 
 
