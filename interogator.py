@@ -1,4 +1,3 @@
-import clip
 import gc
 import pandas as pd
 import requests
@@ -13,11 +12,10 @@ from torchvision import transforms as T
 from torchvision.transforms.functional import InterpolationMode
 from BLIP.models.blip import BLIP_Decoder, blip_decoder
 from torch.nn.functional import cosine_similarity
-from pydantic import BaseModel, BaseConfig, BaseSettings, Field
+from pydantic import BaseModel, BaseConfig, Field
 from typing_extensions import Literal
-from typing import List, Dict, Any, Optional, Union, Tuple, Callable, cast
+from typing import List, Optional, Tuple, cast
 
-# from clip.model import CLIP
 from open_clip import create_model_and_transforms as create_clip, CLIP, tokenize
 from clip_options import ClipOptions
 import pydash as p_
@@ -165,39 +163,35 @@ class Interrogator:
             torch.cuda.synchronize(self.device)
             del model
             gc.collect()
-            df: pd.DataFrame = pd.DataFrame(
-                table,
-                columns=[
-                    "Model",
-                    "Medium",
-                    "Artist",
-                    "Trending",
-                    "Movement",
-                    "Flavors",
-                ],
-            )
-            if self.in_colab:
-                display(df.head(2))  # type: ignore
-            else:
-                print(df.head(2))
+        df: pd.DataFrame = pd.DataFrame(
+            table,
+            columns=[
+                "Model",
+                "Medium",
+                "Artist",
+                "Trending",
+                "Movement",
+                "Flavors",
+            ],
+        )
+        if self.in_colab:
+            display(df.head(2))  # type: ignore
+        else:
+            print(df.head(2))
 
-        # bests_adjs = list(set([b[0] for b in bests_adjs]))
         bests_adjs = p_.uniq_with(bests_adjs, lambda a, b: a[0] == b[0])
 
         flaves: str = ", ".join([f"{x[0]}" for x in bests[4]])
         medium: str = bests[0][0][0]
         medium_middle = ""
         if caption.startswith(medium):
-            medium_middlle = f", {medium} "
-
+            medium_middle = f", {medium} "
         adjective_beginning = (
             f"A {bests_adjs[0][0].lower()}, {bests_adjs[1][0].lower()} "
         )
         caption = f"{caption if not caption.lower().startswith('a ') else caption[2:]}"
         artist = f" {bests[1][0][0]}, "
-        styles = (
-            f"trending on {bests[2][0][0]}, in the style of {bests[3][0][0]}, {flaves}"
-        )
+        styles = f"{bests[2][0][0]}, {bests[3][0][0]}, {flaves}"
         result_string = f"{adjective_beginning}{caption}{artist}{medium_middle}{styles}"
         return result_string.strip()
 
