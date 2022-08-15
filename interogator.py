@@ -145,7 +145,7 @@ class Interrogator:
                 from_each=from_each,
             )
             bests_adjs.extend(adj_ranks)
-            bests_adjs = p_.uniq_with(bests_adjs, lambda x: x[0])
+            bests_adjs = p_.uniq_with(bests_adjs, comparator=lambda a, b: a[0] == b[0])
             bests_adjs = sorted(bests_adjs, key=lambda x: x[1], reverse=True)
 
             for i in range(len(ranks)):
@@ -182,7 +182,7 @@ class Interrogator:
                 print(df.head(2))
 
         # bests_adjs = list(set([b[0] for b in bests_adjs]))
-        bests_adjs = p_.uniq_with(bests_adjs, lambda x: x[0])
+        bests_adjs = p_.uniq_with(bests_adjs, lambda a, b: a[0] == b[0])
 
         flaves: str = ", ".join([f"{x[0]}" for x in bests[4]])
         medium: str = bests[0][0][0]
@@ -190,7 +190,9 @@ class Interrogator:
         if caption.startswith(medium):
             medium_middlle = f", {medium} "
 
-        adjective_beginning = f"A {bests_adjs[0].lower()}, {bests_adjs[1].lower()} "
+        adjective_beginning = (
+            f"A {bests_adjs[0][0].lower()}, {bests_adjs[1][0].lower()} "
+        )
         caption = f"{caption if not caption.lower().startswith('a ') else caption[2:]}"
         artist = f" {bests[1][0][0]}, "
         styles = (
@@ -290,7 +292,10 @@ if __name__ == "__main__":
     else:
         image: Image.Image = Image.open(image_path_or_url).convert("RGB")
 
-    model_opts = [ClipOptions.ViT_L_14_336_openai]
+    model_opts = [
+        ClipOptions.ViT_L_14_336_openai,
+        ClipOptions.ViT_B_16_plus_240_laion400m_e32,
+    ]
     runcfg = RuntimeConfig()
     thumb: Image.Image = image.copy()
     svc = Interrogator(runcfg=runcfg)
