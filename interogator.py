@@ -189,7 +189,10 @@ class Interrogator:
         adjective_beginning = (
             f"A {bests_adjs[0][0].lower()}, {bests_adjs[1][0].lower()} "
         )
-        caption = f"{caption if not caption.lower().startswith('a ') else caption[2:]}"
+        if caption.lower().startswith("a "):
+            caption = caption[2:]
+        if caption.lower().startswith("an "):
+            caption = caption[3:]
         artist = f" {bests[1][0][0]}, "
         styles = f"{bests[2][0][0]}, {bests[3][0][0]}, {flaves}"
         result_string = f"{adjective_beginning}{caption}{artist}{medium_middle}{styles}"
