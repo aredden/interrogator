@@ -14,7 +14,8 @@ from torchvision.transforms.functional import InterpolationMode
 from BLIP.models.blip import BLIP_Decoder, blip_decoder
 from torch.nn.functional import cosine_similarity
 from pydantic import BaseModel, BaseConfig, BaseSettings, Field
-from typing import List, Dict, Any, Optional, Literal, Union, Tuple, Callable, cast
+from typing_extensions import Literal
+from typing import List, Dict, Any, Optional, Union, Tuple, Callable, cast
 
 # from clip.model import CLIP
 from open_clip import create_model_and_transforms as create_clip, CLIP, tokenize

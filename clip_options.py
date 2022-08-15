@@ -47,7 +47,7 @@ class _ClipOptions(BaseModel):
 
 
 def get_clip_options() -> "_ClipOptions":
-    with open("./inter.json") as f:
+    with open("./clip_options.json") as f:
         data = json.loads(f.read())
     return _ClipOptions(**data)
 
