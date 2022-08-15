@@ -61,7 +61,7 @@ def load_blip(
     if model_size == "base":
         model_url = "https://storage.googleapis.com/sfr-vision-language-research/BLIP/models/model*_base_caption.pth"
     elif model_size == "large":
-        model_url = "https://storage.googleapis.com/sfr-vision-language-research/BLIP/models/model_base_caption.pth"
+        model_url = "https://storage.googleapis.com/sfr-vision-language-research/BLIP/models/model_large_caption.pth"
     else:
         raise ValueError(f"Model size {model_size} is not supported")
     blip_model = blip_decoder(
@@ -297,7 +297,7 @@ if __name__ == "__main__":
         ClipOptions.ViT_L_14_336_openai,
         ClipOptions.ViT_B_16_plus_240_laion400m_e32,
     ]
-    runcfg = RuntimeConfig()
+    runcfg = RuntimeConfig(blip_model_size="large")
     thumb: Image.Image = image.copy()
     svc = Interrogator(runcfg=runcfg)
 
